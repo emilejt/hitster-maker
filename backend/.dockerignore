@@ -1,0 +1,16 @@
+# Never bake credentials into the image
+.env
+
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+.git
+.gitignore
+.github
+
+# Editor
+.vscode
+.idea

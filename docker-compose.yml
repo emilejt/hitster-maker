@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Live reload: mount the source code into the container.
+      - ./backend:/app
+      # Prebuilt model artifacts (vectors, ISRC bridge, popularity). Large and regenerable.
+      - ./models:/models
+      # Durable game data (extraction cache + play history). Kept out of ./models on purpose:
+      # user data must never live next to artifacts that get deleted and rebuilt.
+      - ./data:/data
+    env_file:
+      # Copy backend/.env.example to backend/.env and fill in your Spotify credentials.
+      - path: ./backend/.env
+        required: false
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      # Keep node_modules from the image, so host and container platforms don't clash.
+      - frontend_vue_node_modules:/app/node_modules
+    environment:
+      # Vite only exposes VITE_-prefixed variables to the browser. Spotify requires the
+      # loopback literal 127.0.0.1 (not localhost) for OAuth redirect URIs.
+      - VITE_API_BASE_URL=http://127.0.0.1:8000
+      # Polling file watcher: inotify events don't cross the Docker VM boundary on Windows/macOS.
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  frontend_vue_node_modules:

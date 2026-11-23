@@ -1,0 +1,30 @@
+# Python
+backend/.env
+backend/.venv/
+**/__pycache__/
+**/*.py[co]
+.pytest_cache/
+
+# Node (frontend/ has its own .gitignore for build output)
+frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prebuilt model artifacts (~2.5 GB, see README): never committed
+models/*
+
+# Durable game data written by the backend (services/game_store.py)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# Personal Spotify data export (contains IP addresses and device info)
+Streaming_History_*.json
+
+# AI coding-assistant instructions: kept locally, not published
+CLAUDE.md
+**/CLAUDE.md
+AGENTS.md
+.github/instructions/
